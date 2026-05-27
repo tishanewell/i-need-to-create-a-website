@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IBP Forecast Converter</title>
+  <style>
+    :root {
+      --bg: #f3f5f8;
+      --ink: #142132;
+      --accent: #1f7a66;
+      --panel: #ffffff;
+      --line: #d7dce5;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+    .wrap {
+      max-width: 1050px;
+      margin: 36px auto;
+      padding: 0 20px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+    p {
+      margin: 0 0 16px;
+      color: #3f4b5d;
+    }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    input[type="file"] {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+      min-width: 300px;
+      flex: 1;
+    }
+    button {
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 8px;
+      vertical-align: top;
+    }
+    th {
+      font-size: 13px;
+      letter-spacing: .2px;
+      color: #435168;
+    }
+    .link {
+      color: #1259b5;
+      text-decoration: none;
+      margin-right: 8px;
+    }
+    .muted {
+      color: #64748a;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="panel">
+      <h1>IBP Forecast to Assortment Converter</h1>
+      <p>Upload your IBP forecast workbook and get a converted file in the exact assortment format.</p>
+      <form action="/api/convert" method="post" enctype="multipart/form-data">
+        <input type="file" name="forecast" accept=".xlsx,.xls" required>
+        <button type="submit">Convert and Save</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2 style="margin:0 0 12px;">Past Conversions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>When (UTC)</th>
+            <th>Input File</th>
+            <th>Rows Written</th>
+            <th>Downloads</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if conversions %}
+            {% for c in conversions %}
+            <tr>
+              <td>{{ c.created_at }}</td>
+              <td>{{ c.input_filename }}</td>
+              <td>{{ c.summary.rows_written }}</td>
+              <td>
+                <a class="link" href="/download/{{ c.id }}/input">Input</a>
+                <a class="link" href="/download/{{ c.id }}/output">Output</a>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4" class="muted">No conversions yet.</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
